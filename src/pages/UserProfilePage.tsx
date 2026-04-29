@@ -1,4 +1,4 @@
-import UserProfileForm from "@/forms/UserProfileForm";
+import UserProfileForm from "@/forms/user-profile-form/UserProfileForm";
 import { useUpdateUser, useGetUser } from "@/api/UserApi";
 import LoadingButton from "@/components/LoadingButton";
 import { toast } from "sonner";
@@ -10,8 +10,11 @@ export default function UserProfilePage() {
   if(isLoading)
     return (<LoadingButton />)
 
-  if(isError){
+  if(isError || !user){
     toast.error("Error al cargar los datos del usuario")
+    return (
+      <span>No se pudieron obtener los datos del usuario</span>
+    )
   }
 
   return (

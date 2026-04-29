@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import type {User, UpdateUser, BackEndUser} from "./types";
+import type {User, UpdateUser, BackEndUser} from "../api/types";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'sonner';
@@ -47,21 +47,22 @@ export function useUpdateUser(){
     const queryClient = useQueryClient();
     const { getAccessTokenSilently } = useAuth0();
 
-    //funcion para actualizar un usuario ene l backend
+    //funcion para actualizar un usuario en el backend
     const updateUserRequest = async (formData: UpdateUser)=>{
         const accessToken = await getAccessTokenSilently();
         const res = await fetch(API_BASE_URL + '/api/user', {
             method: 'PUT',
             headers: {
                 Authorization: 'Bearer ' + accessToken,
-                'Content-Type': 'Application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(formData)
         });
         if(!res.ok){
             throw new Error("Error al actualizar usuario");
         }
-    }
+        return res.json();
+    }//fin de updateuserrequest
 
     return useMutation({
         mutationFn: (formData: UpdateUser)=>updateUserRequest(formData), 
@@ -73,8 +74,9 @@ export function useUpdateUser(){
         onSuccess: (user)=>{
             toast.success("Perfil actualizado");
             console.log(user);
+            queryClient.invalidateQueries({queryKey: ['user']});
         }
-})
+    })// fin de return
 }// fin de useupdateuser
 
 //funcion para obtener los datos del usuario
@@ -97,6 +99,6 @@ export function useGetUser(){
 
     return useQuery({
         queryKey: ['users'],
-        queryFn: getUserRequest
+        queryFn: getUserRequest,
     }); //fin return
 }

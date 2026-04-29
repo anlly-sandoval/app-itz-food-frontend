@@ -1,12 +1,13 @@
 import { Auth0Provider } from "@auth0/auth0-react";
 import { useNavigate } from "react-router";
+import { useCreateUser } from "@/api/UserApi";
 
 
 type Props = {
     children: React.ReactNode
 }
 
-function Auth0ProviderWithNavigate({children}: Props) {
+export default function Auth0ProviderWithNavigate({children}: Props) {
     const navigate = useNavigate();
     const domain = import.meta.env.VITE_AUTH0_DOMAIN;
     const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -38,4 +39,3 @@ function Auth0ProviderWithNavigate({children}: Props) {
   )
 }
 
-export default Auth0ProviderWithNavigate

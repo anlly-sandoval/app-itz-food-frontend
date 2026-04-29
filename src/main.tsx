@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")!).render(
       </Auth0ProviderWithNavigate>
       </QueryClientProvider>
     </Router>
-  </StrictMode>,
+  </StrictMode>
 )
 
 

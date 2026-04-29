@@ -45,7 +45,7 @@ export default function UserProfileForm({ onSave, getUser }: Props) {
 
 useEffect(()=>{
     form.reset(getUser);
-}, [getUser])
+}, [getUser, form])
 
     return (
         <Card>

@@ -26,6 +26,6 @@ const AppRoutes = () => {
     </Routes>
     </QueryClientProvider>
   )
-}
+} //fin de approutes
 
 export default AppRoutes;

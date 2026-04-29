@@ -1,6 +1,6 @@
 export type User = {
     auth0Id: string;
-    email: string;
+    email: string,
 }
 export type UpdateUser = {
     name: string;
@@ -10,7 +10,7 @@ export type UpdateUser = {
 }
 export type BackEndUser = {
     _id: string;
-    email: string;
+    email: string,
     name: string;
     address: string;
     city: string;
