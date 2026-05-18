@@ -16,3 +16,21 @@ export type BackEndUser = {
     city: string;
     country: string;
 }
+export type MenuItem = {
+    _id: string;
+    name: string;
+    price: string;
+}
+export type Restaurante = {
+    _id: string;
+    user: string;
+    restauranteName: string;
+    city: string;
+    country: string;
+    deliveryPrice: string;
+    estimatedDeliveryTime: string;
+    cuisines: string [];
+    menuItems: MenuItem[];
+    imageUrl: string;
+    lastUpdated: string;
+}
