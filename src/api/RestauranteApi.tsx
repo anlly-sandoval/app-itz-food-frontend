@@ -6,11 +6,12 @@ import type { Restaurante } from "./types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 //hook para obtener los datos de un restaurante del backend
-export function useGetRestaurante(){
+export function useGetRestaurante() {
     const { getAccessTokenSilently } = useAuth0();
-    //funcion para obtener los datos de un restaurante
-    const getRestauranteRequest = async ():Promise<Restaurante>=>{
+
+    const getRestauranteRequest = async (): Promise<Restaurante> => {
         const accessToken = await getAccessTokenSilently();
+
         const res = await fetch(API_BASE_URL + '/api/restaurante', {
             method: 'GET',
             headers: {
@@ -18,10 +19,17 @@ export function useGetRestaurante(){
                 'Content-Type': 'application/json'
             }
         });
-        if(!res.ok)
-            throw new Error ('Error al obtener los datos del restaurante');
+
+        if (!res.ok)
+            throw new Error('Error al obtener los datos del restaurante');
+
         return res.json();
     }
+
+    return useQuery({
+        queryKey: ['restaurante'],
+        queryFn: getRestauranteRequest
+    });
 }
 
 export function useCreateRestaurante(){
@@ -31,7 +39,7 @@ export function useCreateRestaurante(){
     //funcion para crear un restaurante en el backend
     const createRestauranteRequest = async (restaurantFormData: FormData): Promise<Restaurante>=>{
         const accessToken = await getAccessTokenSilently();
-        const res = await fetch(API_BASE_URL + '/api/estaurante', {
+        const res = await fetch(API_BASE_URL + '/api/restaurante', {
             method: 'POST',
             headers:{
                 Authorization: 'Bearer ' + accessToken,
