@@ -1,112 +1,82 @@
-import { CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { useFormContext, Controller } from "react-hook-form";
-import { type RestaurantFormData } from "./RestaurantFormSchema";
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { FormDescription, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useFormContext } from "react-hook-form";
+import type { RestaurantFromData } from './ManageRestaurantForm';
 
 export default function DetailsSection() {
-    const { control } = useFormContext<RestaurantFormData>();
+  const { control } = useFormContext<RestaurantFromData>();
   return (
     <div className="space-y-2">
-        <CardHeader>
-            <CardTitle className="text-2xl font-bold">
-                Detalles
-            </CardTitle>
-            <CardDescription>
-                Detalles del restaurante
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <FieldGroup>
-                <Controller control={control} name="restauranteName" render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel>Nombre del restaurante</FieldLabel>
-                        <Input
-                            {...field}
-                            id="restauranteName"
-                            placeholder="Ej: Restaurante ITZ"
-                            aria-invalid={fieldState.invalid}
-                            className="bg-white"/>
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]}/>
-                            )}
-                    </Field>
-                )}
-                />
-            </FieldGroup>
-            <div className="flex gap-4">
-            <FieldGroup className="flex-1">
-                <Controller control={control} name="city" render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel>Ciudad</FieldLabel>
-                        <Input
-                            {...field}
-                            id="city"
-                            placeholder="Zacatecas"
-                            aria-invalid={fieldState.invalid}
-                            className="bg-white"/>
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]}/>
-                            )}
-                    </Field>
-                )}
-                />
-            </FieldGroup>
-            <FieldGroup className="flex-1">
-                <Controller control={control} name="country" render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel>Pais</FieldLabel>
-                        <Input
-                            {...field}
-                            id="country"
-                            placeholder="Ej: Mexico"
-                            aria-invalid={fieldState.invalid}
-                            className="bg-white"/>
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]}/>
-                            )}
-                    </Field>
-                )}
-                />
-            </FieldGroup>
-            </div>
-            <div className="flex gap-4">
-                <FieldGroup>
-                <Controller control={control} name="deliveryPrice" render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid} className="max-w-[25%] md:max-w-[50%]:">
-                        <FieldLabel>Precio de entrega ($pesos)</FieldLabel>
-                        <Input
-                            {...field}
-                            id="deliveryPrice"
-                            placeholder="Ej: 100.00"
-                            aria-invalid={fieldState.invalid}
-                            className="bg-white"/>
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]}/>
-                            )}
-                    </Field>
-                )}
-                />
-            </FieldGroup>
-            <FieldGroup>
-                <Controller control={control} name="estimatedDeliveryTime" render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid} className="max-w-[25%] md:max-w-[50%]:">
-                        <FieldLabel>Tiempo estimado de entrega (minutos)</FieldLabel>
-                        <Input
-                            {...field}
-                            id="estimatedDeliveryTime"
-                            placeholder="Ej: 30"
-                            aria-invalid={fieldState.invalid}
-                            className="bg-white"/>
-                            {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]}/>
-                            )}
-                    </Field>
-                )}
-                />
-            </FieldGroup>
-            </div>
-        </CardContent>
+      <div>
+        <h2 className="text-2xl font-bold">Detalles</h2>
+        <FormDescription>
+          Detalles del restaurante
+        </FormDescription>
+      </div>
+      <FormField control={control}
+        name="restaurantName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Nombre</FormLabel>
+            <FormControl>
+              <Input {...field} className="bg-white"/>
+            </FormControl>
+            <FormMessage className='text-red-500'/>
+          </FormItem>
+        )}
+      />
+      <div className="flex flex-col md:flex-row gap-4">
+        <FormField control={control}
+          name="city"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Ciudad</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white"/>
+              </FormControl>
+              <FormMessage className='text-red-500'/>
+            </FormItem>
+          )}
+        />
+        <FormField control={control}
+          name="country"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Pais</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white"/>
+              </FormControl>
+              <FormMessage className='text-red-500'/>
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className="flex flex-col md:flex-row gap-4">
+        <FormField control={control}
+          name="deliveryPrice"
+          render={({ field }) => (
+            <FormItem className="w-full md:max-w-[25%]">
+              <FormLabel>Precio de entrega ($ pesos)</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white" placeholder="100.00"/>
+              </FormControl>
+              <FormMessage className='text-red-500'/>
+            </FormItem>
+          )}
+        />
+        <FormField control={control}
+          name="estimatedDeliveryTime"
+          render={({ field }) => (
+            <FormItem className="w-full md:max-w-[50%]">
+              <FormLabel>Tiempo estimado de entrega (minutos)</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white" placeholder="30"/>
+              </FormControl>
+              <FormMessage className='text-red-500'/>
+            </FormItem>
+          )}
+        />
+      </div>
     </div>
   )
 }

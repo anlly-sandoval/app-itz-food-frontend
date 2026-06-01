@@ -1,32 +1,30 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { FieldLabel } from "@/components/ui/field";
-import { type ControllerRenderProps } from "react-hook-form";
-import { type RestaurantFormData } from "./RestaurantFormSchema";
+import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
+import type { ControllerRenderProps, FieldValues } from "react-hook-form";
 
 type Props = {
-    cuisine: string,
-    field: ControllerRenderProps<RestaurantFormData, "cuisines">;
-}
+    cuisine: string;
+    field: ControllerRenderProps<FieldValues, "cuisines">;
+};
 
-export default function CuisineCheckbox({cuisine, field}: Props) {
-  return (
-    <div className="flex flex-row items-center gap-2 p-2 hover:bg-gray-50 rounded-md transition-colors">
-        <Checkbox
-            id={`cuisine-${cuisine}`}
-            className='bg-white h-4 w-2 flex'
-            checked={field.value.includes(cuisine)}
-            onCheckedChange={(checked)=>{
-                if(checked)
-                    field.onChange([...field.value, cuisine]);
-                else
-                    field.onChange(field.value.filter((value:string)=>value !== cuisine))
-            }}
-        />
-        <FieldLabel
-            htmlFor={`cuisine-${cuisine}`}
-            className="text-sm font-normal flex">
+export default function CuisineCheckbox({ cuisine, field }: Props) {
+    return (
+        <FormItem className="flex flex-row items-center space-x-1 space-y-0 mt-2">
+            <FormControl>
+                <Checkbox
+                    className="bg-white"
+                    checked={field.value.includes(cuisine)}
+                    onCheckedChange={(checked) => {
+                        if (checked)
+                            field.onChange([...field.value, cuisine]);
+                        else
+                            field.onChange(field.value.filter((value: string) => value !== cuisine));
+                    }}
+                />
+            </FormControl>
+            <FormLabel className="text-sm font-normal">
                 {cuisine}
-            </FieldLabel>
-    </div>
-  )
+            </FormLabel>
+        </FormItem>
+    );
 }

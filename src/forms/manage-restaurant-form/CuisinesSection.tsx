@@ -1,49 +1,42 @@
-import { CardDescription, CardTitle, CardContent } from "@/components/ui/card";
-import { Controller, useFormContext } from "react-hook-form";
-import { type RestaurantFormData } from "./RestaurantFormSchema";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { cuisineList } from "@/config/restaurant-options-config";
+import { useFormContext } from "react-hook-form";
 import CuisineCheckbox from "./CuisineCheckbox";
-import { cuisineList } from '@/config/restaurant-options-config';
 
 export default function CuisinesSection() {
-    const { control } = useFormContext<RestaurantFormData>();
+    const {control}=useFormContext();
   return (
     <div className="space-y-2">
-        <CardContent>
-            <CardTitle className="text-2xl font-bold">
-                Cocinas
-            </CardTitle>
-            <CardDescription>
+        <div>
+            <h2 className="text-2xl font-bold">Cocinas</h2>
+            <FormDescription>
                 Selecciona el tipo de cocina que el restaurante servira
-            </CardDescription>
-            <FieldGroup>
-                <Controller
-                    control={control}
-                    name="cuisines"
-                    render={({ field, fieldState })=>(
-                        <Field data-invalid={fieldState.invalid}>
-                            <div className="grid grid-cols-2 md:grid-cols-5 gap-2 p-4 bg-white rounded-lg border">
-                                {
-                                    cuisineList.map(
-                                        (cuisineItem)=> (
-                                            <CuisineCheckbox
-                                                cuisine={cuisineItem}
-                                                field={field}
-                                                key={cuisineItem} />
-                                        )
-                                    )
-                                }
-                            </div>
-                            { fieldState.invalid && (
-                                <FieldError className="mt-2">
-                                    {fieldState.error?.message}
-                                </FieldError>
-                            )}
-                        </Field>
-                    )}
-                />    
-            </FieldGroup>
-        </CardContent>
+            </FormDescription>
+        </div>
+     <FormField control={control}
+     name="cuisines"
+     render={
+        ({field})=>(
+            <FormItem>
+                <div className="grid md:grid-cols-5 gap-1">
+                    {
+                        cuisineList.map(
+                            (cuisineItem)=>(
+                                <CuisineCheckbox
+                                key={cuisineItem}
+                                cuisine={cuisineItem}
+                                field={field}
+                                />
+
+                            )
+                        )
+                    }
+                </div>
+                <FormMessage className="text-red-500"/>
+            </FormItem>
+        )
+     }
+     />
     </div>
   )
 }

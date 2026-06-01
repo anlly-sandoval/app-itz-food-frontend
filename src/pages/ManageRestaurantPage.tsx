@@ -1,17 +1,54 @@
-import ManageRestaurantForm from "@/forms/manage-restaurant-form/ManageRestaurantForm";
-import { useCreateRestaurante, useGetRestaurante, useUpdateRestaurante } from "@/api/RestauranteApi";
+import ManageRestaurantFrom from "@/forms/manage-restaurant-form/ManageRestaurantForm"
+import { useCreateRestaurant, useGetRestaurante, useUpdateRestaurant } from "@/api/RestauranteApi";
+import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import OrderItemsCard from "@/components/Orders/OrderItemsCard";
+import { useGetRestaurantOrders } from "@/api/orderApi";
 
 export default function ManageRestaurantPage() {
-    const createRestauranteRequest = useCreateRestaurante();
-    const { data:restaurante, isLoading } = useGetRestaurante();
-    const updateRestauranteRequest = useUpdateRestaurante();
+  const createRestaurantRequest = useCreateRestaurant();
+  const { data: restaurante, isLoading } = useGetRestaurante();
+  const  updateRestaurantRequest = useUpdateRestaurant();
+  const { data:orders} = useGetRestaurantOrders();
 
-    const isEdditing = !!restaurante;
+  const isEditing = !!restaurante;
 
   return (
-    <ManageRestaurantForm
+    <Tabs defaultValue="orders">
+      <TabsList>
+        <TabsTrigger
+        className="border-olive-500 hover:bg-olive-500 hover:border-gray-400 mr-2"
+        value="orders">Ordenes</TabsTrigger>
+        <TabsTrigger
+        className="border-olive-500 hover:bg-olive-500 hover:border-gray-400 mr-2"
+        value="manage-restaurant">Administrar restaurante</TabsTrigger>
+      </TabsList>
+      <TabsContent value="orders">
+        {
+          orders?.map((order)=>(
+            <OrderItemsCard order={order} key={order._id} />
+          ))
+        }
+      </TabsContent>
+      <TabsContent value="manage-restaurant">
+        <ManageRestaurantFrom 
         restaurante={restaurante}
-        onSave={isEdditing? updateRestauranteRequest.mutate : createRestauranteRequest.mutate}
-        isLoading={isLoading}/>
+        onSave={isEditing
+          ? updateRestaurantRequest.mutate
+          : createRestaurantRequest.mutate
+
+        }
+        isLoading={isLoading
+          || createRestaurantRequest.isPending
+          || updateRestaurantRequest.isPending
+        }
+        />
+      </TabsContent>
+    </Tabs>
+   /* <ManageRestaurantFrom
+      restaurante={restaurante ?? undefined}
+      onSave={isEditing ? updateRestaurant : createRestaurant}
+      isLoading={isLoading || isCreating || isUpdating}
+    />
+   */
   )
 }

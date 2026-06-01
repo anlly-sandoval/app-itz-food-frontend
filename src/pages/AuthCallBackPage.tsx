@@ -5,18 +5,34 @@ import { useNavigate } from "react-router";
 
 export default function AuthCallBackPage() {
     const navigate = useNavigate();
-    const { user } = useAuth0();
+    const { user, isLoading, isAuthenticated } = useAuth0();
     const createUserRequest = useCreateUser();
+    const hasCreatedUser = useRef(false);
 
-    const hasCreatedUser = useRef(false)
-    useEffect(()=>{
-        if (user?.sub && user?.email && !hasCreatedUser.current){
-            createUserRequest.mutate({auth0Id: user.sub, email: user.email});
-            hasCreatedUser.current = true;
+    useEffect(() => {
+        if (isLoading) return;
+
+        if (!isAuthenticated) {
+            navigate("/");
+            return;
         }
-        navigate('/');
-    }, [ createUserRequest, navigate, user])
-  return (
-    <div>Loading</div>
-  )
+
+        if (user?.sub && user?.email && !hasCreatedUser.current) {
+            hasCreatedUser.current = true;
+            createUserRequest.mutate(
+                { auth0Id: user.sub, email: user.email },
+                { onSettled: () => navigate("/") }
+            );
+            return;
+        }
+
+        navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoading, isAuthenticated, user]);
+
+    return (
+        <div className="flex items-center justify-center h-screen">
+            <span className="text-orange-500 text-xl font-semibold animate-pulse">Iniciando sesión...</span>
+        </div>
+    );
 }

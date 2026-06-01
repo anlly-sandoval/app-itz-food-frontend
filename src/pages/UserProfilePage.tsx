@@ -1,27 +1,25 @@
-import UserProfileForm from "@/forms/user-profile-form/UserProfileForm";
 import { useUpdateUser, useGetUser } from "@/api/UserApi";
+import UserProfileForm from "@/forms/user-profile-form/UserProfileForm";
 import LoadingButton from "@/components/LoadingButton";
 import { toast } from "sonner";
 
 export default function UserProfilePage() {
-  const { data: user, isLoading, isError } = useGetUser();
-  const updateUserRequest = useUpdateUser();
+    const { data: user, isLoading, isError } = useGetUser();
+    const updateUserRequest = useUpdateUser();
 
-  if(isLoading)
-    return (<LoadingButton />)
+    if (isLoading)
+        return <LoadingButton />;
 
-  if(isError || !user){
-    toast.error("Error al cargar los datos del usuario")
+    if (isError) {
+        toast.error("Error al cargar los datos del usuario");
+        return <span>Error al cargar el perfil</span>;
+    }
+
     return (
-      <span>No se pudieron obtener los datos del usuario</span>
-    )
-  }
-
-  return (
-    <UserProfileForm 
-    onSave={updateUserRequest.mutate}
-    getUser={user} />
-  )
+        <UserProfileForm
+            onSave={updateUserRequest.mutate}
+            isLoading={updateUserRequest.isPending}
+            getUser={user!}
+        />
+    );
 }
-
-

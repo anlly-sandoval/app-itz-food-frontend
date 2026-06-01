@@ -1,100 +1,100 @@
-import { formSchema, type RestaurantFormData } from "./RestaurantFormSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider } from 'react-hook-form';
-import { Card } from '@/components/ui/card';
-import DetailsSection from "./DetailsSection";
-import { Button } from "@/components/ui/button";
-import LoadingButton from "@/components/LoadingButton";
-import { Separator } from "@/components/ui/separator";
-import CuisinesSection from "./CuisinesSection";
-import MenuSection from "./MenuSection";
-import ImageSection from "./ImageSection";
-import type { Restaurante } from "@/api/types";
-import { useEffect } from "react";
+import {z} from 'zod';
+import { formSchema } from './RestaurantFormSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
+import DetailsSection from './DetailsSection';
+import { Separator } from '@/components/ui/separator';
+import CuisinesSection from './CuisinesSection';
+import MenuSection from './MenuSection';
+import ImageSection from './ImageSection';
+import LoadingButton from '@/components/LoadingButton';
+import { Button } from '@/components/ui/button';
+import type { Restaurante } from '@/api/types';
+import { useEffect } from 'react';
+import type { RestaurantFromData } from './RestaurantFormSchema';
+
+export type {RestaurantFromData};
+
+
 
 type Props = {
-    restaurante?: Restaurante
-    onSave: (restaurantFormData: FormData)=>void;
+    restaurante?:Restaurante
+    onSave: (restaurantFromData: FormData) => void;
     isLoading: boolean;
 }
 
-export default function ManageRestaurantForm({onSave, isLoading, restaurante}: Props) {
-    const form = useForm<RestaurantFormData>({
+
+export default function ManageRestaurantFrom({ onSave, isLoading, restaurante }: Props) {
+    const form = useForm<RestaurantFromData>({
         resolver: zodResolver(formSchema),
-        defaultValues:{
-            restauranteName: "",
+        defaultValues: {
+            restaurantName: "",
             city: "Zacatecas",
-            country: "Mexico",
-            deliveryPrice: "100",
-            estimatedDeliveryTime: "30",
+            country: "México",
+            deliveryPrice: 100,
+            estimatedDeliveryTime: 30,
             cuisines: [],
-            menuItems: [{name: "", price: "0.00"}],
+            menuItems: [{ name: "", price: 0.00 }],
+            imagenUrl: ""
         }
-    });
+    })
+    useEffect(() => {
+        if (!restaurante) return;
 
-    //useEffect para cargar los datos del restaurante en el formulario
-    useEffect(()=>{
-        if(!restaurante)
-            return;
+        const updateRestaurante = {
+            restaurantName: restaurante.restauranteName,
+            city: restaurante.city,
+            country: restaurante.country,
+            deliveryPrice: restaurante.deliveryPrice / 100,
+            estimatedDeliveryTime: restaurante.estimatedDeliveryTime,
+            cuisines: restaurante.cuisines,
+            menuItems: restaurante.menuItems,
+            imagenUrl: restaurante.imageUrl,
+        };
 
-        //cargamos los datos del restaurante extraidos del backend en el formulario
-        form.reset(restaurante);
+        form.reset(updateRestaurante);
+    }, [restaurante]);
 
-    }, [form, restaurante]); // fin de useeffect
-
-    //funcion para procesar los datos del usuario
-    const onSubmit = (formDataJson: RestaurantFormData)=>{
-        //console.log(formData);
-        //convertimos los datos
+    const onSubmit=(formDataJson: RestaurantFromData) => {
+        //onSave(data);
         const formData = new FormData();
-
-        formData.append("restauranteName", formDataJson.restauranteName);
+        formData.append("restauranteName", formDataJson.restaurantName);
         formData.append("city", formDataJson.city);
         formData.append("country", formDataJson.country);
-        formData.append("deliveryPrice", formDataJson.deliveryPrice.toString());
+        formData.append("deliveryPrice", (formDataJson.deliveryPrice * 100).toString());
         formData.append("estimatedDeliveryTime", formDataJson.estimatedDeliveryTime.toString());
 
-        //procesamos el arreglo de cocinas
-        formDataJson.cuisines.forEach(
-            (cuisine, index)=>{
-                formData.append(`cuisines[${index}]`, cuisine)
-            }
-        )
+        formDataJson.cuisines.forEach((cuisine) => {
+            formData.append("cuisines", cuisine);
+        });
 
-        //procesamos el arreglo de los items del menu
-        formDataJson.menuItems.forEach(
-            (MenuItem, index)=>{
-                formData.append(`menuItems[${index}][name]`, MenuItem.name)
-                formData.append(`menuItems[${index}][price]`, MenuItem.price.toString())
-            }
-        );
+        formDataJson.menuItems.forEach((menuItem, index) => {
+            formData.append(`menuItems[${index}][name]`, menuItem.name);
+            formData.append(`menuItems[${index}][price]`, menuItem.price.toString());
+        });
 
-        //verificamos que exista la imagen para un nuevp restaurante
-        if(formDataJson.imageFile){
-            //procesamos la imagen del restaurante
-            formData.append("imageFile", formDataJson.imageFile ||"")
+        if (formDataJson.imagenFile) {
+            formData.append("imagenFile", formDataJson.imagenFile);
         }
-
-        //enviamos los datos al backend
-        onSave(formData);
-    }; //fin de onSubmit
-
-  return (
-    <Card>
-        <FormProvider {...form}>
-        <form id="manage-restaurant-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-gray-50 p-10 rounded-lg">
-            <DetailsSection/>
-            <Separator/>
-            <CuisinesSection/>
-            <Separator/>
-            <MenuSection/>
-            <Separator/>
-            <ImageSection/>
-            {
-                isLoading ? <LoadingButton/> : <Button className='bg-black text-white' type="submit">Guardar</Button>
-            }
+        onSave(formData)
+    }
+    return (
+        <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}
+            className='space-y-8 bg-gray-50 p-4 md:p-10 rounded-lg'>
+                <DetailsSection/>
+                <Separator/>
+                <CuisinesSection/>
+                <Separator/>
+                <MenuSection/>
+                <ImageSection/>
+                {
+                    isLoading ? <LoadingButton/> :
+                    <Button className='bg-black text-white'
+                    type='submit'>Guardar</Button>
+                }
         </form>
-        </FormProvider>
-    </Card>
-  )
+        </Form>
+    )
 }

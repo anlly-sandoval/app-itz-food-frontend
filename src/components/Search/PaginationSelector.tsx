@@ -1,45 +1,42 @@
-import {
-    Pagination, PaginationContent,
-    PaginationItem, PaginationPrevious, 
-    PaginationLink, PaginationNext
-} from '@/components/ui/pagination'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
 
 type Props = {
-    page: number;
+    page:number;
     pages: number;
     onPageChange: (page:number)=>void;
+
 }
 
-function PaginationSelector({page, pages, onPageChange}:Props) {
-    //pageNumbers es un arreglo que contendra el numero de paginas
-    const pageNumbers:Array<number> = [];
+ function PaginationSelector({page, pages, onPageChange}:Props) {
+  //PageNumbers es un arreglo qie contendra el numeroo de paginas
+  const pageNumbers:Array<number>=[];
 
-    for(let i=1; i<pages; i++){
-        pageNumbers.push(i);
-    }
 
-  return (
+  //Porr ejemplo , si pages = 3
+  //pageNumbers = [1,2,3]
+  for (let i=1; i<pages; i++){
+    pageNumbers.push(i);
+  }
+    return (
     <Pagination>
         <PaginationContent>
             {
-                page!=1 && (
+                page!=1 &&(
                     <PaginationItem>
                         <PaginationPrevious
-                            href='#'
-                            onClick={()=>onPageChange(page -1)}
-                        />    
+                        href="#"
+                        onClick={()=>onPageChange(page-1)}
+                        />
                     </PaginationItem>
                 )
             }
             {
-                pageNumbers.map((number, key)=>(
+                pageNumbers.map((number,key)=>(
                     <PaginationItem key={key}>
-                        <PaginationLink href='#'
-                            onClick={()=> onPageChange(number)}
-                            isActive={page===number}
-                    >
-                        {number}
-                        </PaginationLink>        
+                        <PaginationLink href="#"
+                        onClick={()=>onPageChange(number)}>
+                            {number}
+                        </PaginationLink>
                     </PaginationItem>
                 ))
             }
@@ -47,9 +44,8 @@ function PaginationSelector({page, pages, onPageChange}:Props) {
                 page!== pageNumbers.length && (
                     <PaginationItem>
                         <PaginationNext
-                            href='#'
-                            onClick={()=> onPageChange(page +1)}
-                        />    
+                        href="#"
+                        onClick={()=>onPageChange(page+1)} />
                     </PaginationItem>
                 )
             }
@@ -57,5 +53,4 @@ function PaginationSelector({page, pages, onPageChange}:Props) {
     </Pagination>
   )
 }
-
-export default PaginationSelector;
+export default PaginationSelector

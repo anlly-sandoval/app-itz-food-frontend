@@ -3,188 +3,203 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { FieldGroup, Field, FieldLabel, FieldError } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { FieldGroup, Field, FieldLabel, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { type BackEndUser } from '@/api/types';
-import { useEffect } from 'react';
+import type { BackEndUser } from '@/api/types';
 
 const formSchema = z.object({
-    email: z.string().optional(),
-    name: z.string('El nombre debe de ser requerido')
-            .min(3,'El nombre debe tener al menos 3 caracteres'),
-    address: z.string('Dirección debe ser requerida'),
-    city: z.string('La ciudad debe ser requerida'),
-    country: z.string('El país debe ser requerido')
-});//Fin de formSchema
+  email: z.string().optional(),
 
+  name: z.string()
+    .min(1, 'El nombre es requerido')
+    .min(3, 'El nombre debe tener al menos 3 caracteres'),
+
+  address: z.string()
+    .min(1, 'La dirección es requerida'),
+
+  city: z.string()
+    .min(1, 'La ciudad es requerida'),
+
+  country: z.string()
+    .min(1, 'El país es requerido')
+});
 
 export type UserFormData = z.infer<typeof formSchema>;
-
 type Props = {
     onSave: (userProfileData: UserFormData) => void;
+    isLoading?: boolean;
     getUser: BackEndUser;
+    title?:string,
+    buttonText?:string
 }
 
-export default function UserProfileForm({ onSave, getUser }: Props) {
+export default function UserProfileForm({ 
+    onSave, 
+     getUser ,
+    title="Formulario de perfil del usuario",
+    buttonText="Actualizar"
+}: Props) {
 
     const form = useForm<UserFormData>({
         defaultValues:{
-            name: '',
-            city: '',
-            address: '',
-            country: ''
+            email: getUser?.email || '',
+            name: getUser?.name || '',
+            city: getUser?.city || '',
+            address: getUser?.address || '',
+            country: getUser?.country || '',
         },
         resolver: zodResolver(formSchema),
     });//Fin de form
 
-    function onSubmit(data: UserFormData){
-    //console.log(JSON.stringify(data))
-    onSave(data);
-} //fin de onsubmit
-
-useEffect(()=>{
-    form.reset(getUser);
-}, [getUser, form])
+    function onSubmit(data: UserFormData) {
+        onSave(data);
+    }//Fin de onSubmit
 
     return (
         <Card>
             <form id="user-profile-form"
-                onSubmit={(form.handleSubmit(onSubmit))}
+                onSubmit={form.handleSubmit(onSubmit)}
                 className='space-y-4 bg-gray-50 rounded-lg md:pd-10'
             >
                 <CardHeader>
                     <CardTitle>
-                        Perfil del Usuario
+                        {title}
                     </CardTitle>
                     <CardDescription>
-                        Consulta y cambia la informacion de tu perfil aqui
+                        Consulta y cambia la información de tu perfil aquí
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <FieldGroup>
-                        <Controller 
-                        name="email"
-                        control={form.control}
-                        render={({field, fieldState})=>(
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel>Email</FieldLabel>
-                                 <Input
-                            {...field} disabled
-                            id="email"
-                            aria-invalid={fieldState.invalid}
-                            placeholder='Teclea tu email'
-                            className='bg-white'
-                            />
-                            {
-                                fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]}/>
-                                )
-                            }
-                            </Field>
-                        )}
+                        <Controller
+                            name="email"
+                            control={form.control}
+                            render={ ( { field, fieldState}) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Email</FieldLabel>
+                                    <Input
+                                        {...field} readOnly
+                                        id="email"
+                                        aria-invalid={fieldState.invalid}
+                                        placeholder='Teclea tu email'
+                                        className='bg-white'
+                                    />
+                                    {
+                                        fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )
+                                    }
+                                </Field>
+                            )}
                         />
                     </FieldGroup>
                     <FieldGroup>
-                        <Controller 
-                        name="name"
-                        control={form.control}
-                        render={({field, fieldState})=>(
-                            <Field data-invalid={fieldState.invalid} className='mt-4'>
-                                <FieldLabel>Nombre</FieldLabel>
-                                 <Input
-                            {...field} 
-                            id="name"
-                            aria-invalid={fieldState.invalid}
-                            placeholder='Teclea tu nombre'
-                            className='bg-white'
-                            />
-                            {
-                                fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]}/>
-                                )
-                            }
-                            </Field>
-                        )}
+                        <Controller
+                            name="name"
+                            control={form.control}
+                            render={ ( { field, fieldState}) => (
+                                <Field data-invalid={fieldState.invalid}
+                                        className='mt-4'
+                                >
+                                    <FieldLabel>Nombre</FieldLabel>
+                                    <Input
+                                        {...field} 
+                                        id="name"
+                                        aria-invalid={fieldState.invalid}
+                                        placeholder='Teclea tu nombre'
+                                        className='bg-white'
+                                    />
+                                    {
+                                        fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )
+                                    }
+                                </Field>
+                            )}
                         />
                     </FieldGroup>
                     <div className='flex flex-col md:flex-row gap-4 mt-4'>
                         <FieldGroup>
-                        <Controller 
-                        name="address"
-                        control={form.control}
-                        render={({field, fieldState})=>(
-                            <Field data-invalid={fieldState.invalid} className='mt-4'>
-                                <FieldLabel>Direccion</FieldLabel>
-                                 <Input
-                            {...field} 
-                            id="address"
-                            aria-invalid={fieldState.invalid}
-                            placeholder='Teclea tu direccion'
-                            className='bg-white'
+                            <Controller
+                                name="address"
+                                control={form.control}
+                                render={ ( { field, fieldState}) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Dirección</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="address"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder='Teclea tu dirección'
+                                            className='bg-white'
+                                        />
+                                        {
+                                            fieldState.invalid && (
+                                                <FieldError errors={[fieldState.error]} />
+                                            )
+                                        }
+                                    </Field>
+                                )}
                             />
-                            {
-                                fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]}/>
-                                )
-                            }
-                            </Field>
-                        )}
-                        />
-                    </FieldGroup>
-                    <FieldGroup>
-                        <Controller 
-                        name="city"
-                        control={form.control}
-                        render={({field, fieldState})=>(
-                            <Field data-invalid={fieldState.invalid} className='mt-4'>
-                                <FieldLabel>Ciudad</FieldLabel>
-                                 <Input
-                            {...field} 
-                            id="city"
-                            aria-invalid={fieldState.invalid}
-                            placeholder='Teclea tu ciudad'
-                            className='bg-white'
+                        </FieldGroup>
+                        <FieldGroup>
+                            <Controller
+                                name="city"
+                                control={form.control}
+                                render={ ( { field, fieldState}) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Ciudad</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="city"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder='Teclea tu ciudad'
+                                            className='bg-white'
+                                        />
+                                        {
+                                            fieldState.invalid && (
+                                                <FieldError errors={[fieldState.error]} />
+                                            )
+                                        }
+                                    </Field>
+                                )}
                             />
-                            {
-                                fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]}/>
-                                )
-                            }
-                            </Field>
-                        )}
-                        />
-                    </FieldGroup>
-                    <FieldGroup>
-                        <Controller 
-                        name="country"
-                        control={form.control}
-                        render={({field, fieldState})=>(
-                            <Field data-invalid={fieldState.invalid} className='mt-4'>
-                                <FieldLabel>Pais</FieldLabel>
-                                 <Input
-                            {...field} 
-                            id="country"
-                            aria-invalid={fieldState.invalid}
-                            placeholder='Teclea tu pais'
-                            className='bg-white'
+                        </FieldGroup>
+                        <FieldGroup>
+                            <Controller
+                                name="country"
+                                control={form.control}
+                                render={ ( { field, fieldState}) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>País</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="country"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder='Teclea tu país'
+                                            className='bg-white'
+                                        />
+                                        {
+                                            fieldState.invalid && (
+                                                <FieldError errors={[fieldState.error]} />
+                                            )
+                                        }
+                                    </Field>
+                                )}
                             />
-                            {
-                                fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]}/>
-                                )
-                            }
-                            </Field>
-                        )}
-                        />
-                    </FieldGroup>
+                        </FieldGroup>
                     </div>
                 </CardContent>
                 <CardFooter>
                     <Field orientation="horizontal">
-                        <Button type='submit' form='user-profile-form' className='bg-orange-500 text-white'>
-                            Actualizar
-                        </Button>
+                            <Button type="submit" 
+                                    form="user-profile-form"
+                                    className="bg-orange-500 text-white"
+                            >
+                                {buttonText}
+                            </Button>
+                    
                     </Field>
                 </CardFooter>
             </form>

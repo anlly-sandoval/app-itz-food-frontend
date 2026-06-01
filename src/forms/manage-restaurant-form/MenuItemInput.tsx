@@ -1,68 +1,63 @@
-import { Controller, useFormContext } from "react-hook-form";
-import { type RestaurantFormData } from "./RestaurantFormSchema";
-import { FieldGroup, Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { FormField, FormMessage, FormLabel, FormItem, FormControl } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useFormContext } from 'react-hook-form';
+import type { RestaurantFromData } from './ManageRestaurantForm';
 
 type Props = {
     index: number;
-    removeMenuItem: ()=> void;
+    removerMenuItem: () => void;
 }
 
-export default function MenuItemInput({index, removeMenuItem}: Props) {
-    const { control } = useFormContext<RestaurantFormData>();
-  return (
-    <div className="flex flex-row items-end gap-2">
-        <FieldGroup>
-            <Controller
+export default function MenuItemInput({ index, removerMenuItem }: Props) {
+    const { control } = useFormContext<RestaurantFromData>();
+
+    return (
+        <div className='flex flex-col sm:flex-row items-start sm:items-end gap-2'>
+            <FormField
                 control={control}
                 name={`menuItems.${index}.name`}
-                render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel className='flex items-center gap-1'>
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel className='flex items-center gap-1'>
                             Nombre
-                        </FieldLabel>
-                        <FieldGroup>
-                            <Input 
+                            <FormMessage className='text-red-500' />
+                        </FormLabel>
+                        <FormControl>
+                            <Input
                                 {...field}
-                                placeholder="Hambuerguesa"
-                                className='bg-white' />
-                        </FieldGroup>
-                        { fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]}/>
-                        )}
-                    </Field>
+                                placeholder='Hamburguesa'
+                                className='bg-white'
+                            />
+                        </FormControl>
+                    </FormItem>
                 )}
-                />
-        </FieldGroup>
-        <FieldGroup>
-            <Controller
+            />
+            <FormField
                 control={control}
                 name={`menuItems.${index}.price`}
-                render={({field, fieldState})=>(
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel className='flex items-center gap-1'>
+                render={({ field }) => (
+                    <FormItem>
+                        <FormLabel className='flex items-center gap-1'>
                             Precio ($)
-                        </FieldLabel>
-                        <FieldGroup>
-                            <Input 
+                            <FormMessage className='text-red-500' />
+                        </FormLabel>
+                        <FormControl>
+                            <Input
                                 {...field}
-                                placeholder="99.99"
-                                className='bg-white' />
-                        </FieldGroup>
-                        { fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]}/>
-                        )}
-                    </Field>
+                                placeholder='99.99'
+                                className='bg-white'
+                            />
+                        </FormControl>
+                    </FormItem>
                 )}
-                />
-        </FieldGroup>
-        <Button 
-            type="button"
-            onClick={removeMenuItem}
-            className="bg-red-500 max-h-fit" >
+            />
+            <Button
+                type="button"
+                variant="destructive"
+                onClick={removerMenuItem}>
                 Eliminar
             </Button>
-    </div>
-  )
+        </div>
+    );
 }
