@@ -3,7 +3,7 @@ import { z } from 'zod';
 const menuItemSchema = z.object({
   name: z.string().min(1, 'El nombre debe tener al menos 1 caracter'),
   price: z.number().min(1, 'El precio debe ser mayor a 0'),
-});
+}); 
 
 export const formSchema = z.object({
   restaurantName: z.string().min(1, 'El nombre del restaurante es requerido').trim(),

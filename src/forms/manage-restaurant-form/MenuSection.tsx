@@ -35,7 +35,7 @@ export default function MenuSection() {
             />
             <Button
                 type="button"
-                onClick={() => append({ name: "", price: "" })}
+                onClick={() => append({ name: "", price: 0 })}
             >
                 Agregar al menú
             </Button>

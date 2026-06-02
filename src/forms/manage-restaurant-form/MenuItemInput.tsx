@@ -44,6 +44,7 @@ export default function MenuItemInput({ index, removerMenuItem }: Props) {
                         </FormLabel>
                         <FormControl>
                             <Input
+                                type='number'
                                 {...field}
                                 placeholder='99.99'
                                 className='bg-white'

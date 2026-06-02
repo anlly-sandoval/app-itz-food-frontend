@@ -58,7 +58,11 @@ export default function DetailsSection() {
             <FormItem className="w-full md:max-w-[25%]">
               <FormLabel>Precio de entrega ($ pesos)</FormLabel>
               <FormControl>
-                <Input {...field} className="bg-white" placeholder="100.00"/>
+                <Input 
+                type="number"
+                {...field} 
+                className="bg-white" 
+                placeholder="100.00"/>
               </FormControl>
               <FormMessage className='text-red-500'/>
             </FormItem>
@@ -70,7 +74,11 @@ export default function DetailsSection() {
             <FormItem className="w-full md:max-w-[50%]">
               <FormLabel>Tiempo estimado de entrega (minutos)</FormLabel>
               <FormControl>
-                <Input {...field} className="bg-white" placeholder="30"/>
+                <Input 
+                type="number"
+                {...field} 
+                className="bg-white" 
+                placeholder="30"/>
               </FormControl>
               <FormMessage className='text-red-500'/>
             </FormItem>
