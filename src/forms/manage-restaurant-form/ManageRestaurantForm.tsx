@@ -75,7 +75,7 @@ export default function ManageRestaurantFrom({ onSave, isLoading, restaurante }:
         });
 
         if (formDataJson.imagenFile) {
-            formData.append("imagenFile", formDataJson.imagenFile);
+            formData.append("imageFile", formDataJson.imagenFile);
         }
         onSave(formData)
     }
